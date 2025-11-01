@@ -1,5 +1,3 @@
-import { Server as WebSocketServer } from "socket.io";
-
 import fastify, { FastifyInstance } from "fastify";
 import fastifyCookie from "@fastify/cookie";
 import fastifyCors from "@fastify/cors";
@@ -103,24 +101,6 @@ const applyCorsOptions = async () => {
     await app.register(fastifyCors, corsFactory());
 };
 
-const applyWebsocketServer = async (io: WebSocketServer) => {
-    logger.info("Setting up WebSocket server...");
-
-    io.attach(app.server);
-
-    app.decorate("io", io);
-
-    app.addHook("preClose", (done) => {
-        io.local.disconnectSockets(true);
-        done();
-    });
-
-    app.addHook("onClose", (fastify: FastifyInstance, done) => {
-        io.close();
-        done();
-    });
-};
-
 const applyErrorMiddleware = async () => {
     logger.info("Setting up error handler middleware...");
 
@@ -141,7 +121,6 @@ export {
     applyBodyParsing,
     applyCorsOptions,
     applyErrorMiddleware,
-    applyWebsocketServer,
     applyCookieParser,
     applyRateLimiter,
 };

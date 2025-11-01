@@ -1,8 +1,4 @@
 import * as winston from "winston";
-import { PapertrailTransport } from "winston-papertrail-transport";
-
-import os from "os";
-import getenv from "getenv";
 
 export const getLevels = () => {
     return {
@@ -50,30 +46,12 @@ export const getCurrentLevel = (): string => {
 };
 
 export const getTransports = () => {
-    const levels = getLevels();
-
-    const transports: (winston.transports.ConsoleTransportInstance | PapertrailTransport)[] = [
+    const transports: winston.transports.ConsoleTransportInstance[] = [
         //
         new winston.transports.Console({
             level: "debug",
         }),
     ];
-
-    const papertrailUrl = getenv("PAPERTRAIL_URL", "");
-    const papertrailPort = getenv.int("PAPERTRAIL_PORT", 0);
-    const papertrailLevel = getenv("PAPERTRAIL_LEVEL", "warn");
-
-    if (papertrailUrl && papertrailPort) {
-        transports.push(
-            new PapertrailTransport({
-                levels,
-                host: papertrailUrl,
-                port: papertrailPort,
-                hostname: os.hostname(),
-                level: papertrailLevel,
-            }),
-        );
-    }
 
     return transports;
 };
