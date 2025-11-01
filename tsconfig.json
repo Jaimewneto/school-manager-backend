@@ -1,0 +1,52 @@
+{
+    "compilerOptions": {
+        "target": "es2022",
+        "lib": ["es2022"],
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "module": "commonjs",
+        "rootDir": "./src",
+        "baseUrl": ".",
+
+        "paths": {
+            "@auth/*": ["./src/auth/*"],
+            "@config/*": ["./src/config/*"],
+            "@controllers/*": ["./src/controllers/*"],
+            "@core/*": ["./src/core/*"],
+            "@crons/*": ["./src/crons/*"],
+            "@database/*": ["./src/database/*"],
+            "@docs/*": ["./src/docs/*"],
+            "@events/*": ["./src/events/*"],
+            "@errors/*": ["./src/errors/*"],
+            "@logging/*": ["./src/logging/*"],
+            "@messaging/*": ["./src/messaging/*"],
+            "@middlewares/*": ["./src/middlewares/*"],
+            "@models/*": ["./src/models/*"],
+            "@queues/*": ["./src/queues/*"],
+            "@reports/*": ["./src/reports/*"],
+            "@routes/*": ["./src/routes/*"],
+            "@security/*": ["./src/security/*"],
+            "@services/*": ["./src/services/*"],
+            "@utils/*": ["./src/utils/*"],
+            "@validations/*": ["./src/validations/*"],
+            "@/*": ["./src/*"]
+        },
+
+        "resolveJsonModule": true,
+        "allowJs": true,
+        "outDir": "./dist",
+        "removeComments": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "inlineSources": true,
+
+        "strict": true,
+        "strictNullChecks": true,
+
+        "sourceRoot": "/"
+    },
+    "include": ["./src/**/*", "./src/**/*.d.ts"]
+}
