@@ -4,7 +4,7 @@ import { CompanyModelInsert } from "@database/models/CompanyModel";
 
 import { CheckSchema } from "@/types/validation";
 
-import ValidationUtils, { ZodUFEnum } from "@utils/validation";
+import { ZodUFEnum } from "@utils/validation";
 
 export const CompanyParamsSchema = z.object({
     uuid: z.string().uuid(),
@@ -17,7 +17,7 @@ export const CompanyCreateSchema = z.object({
     legal_name: z.string().min(3).max(110),
     trade_name: z.string().min(3).max(110).nullable().optional(),
 
-    tax_id: z.string().min(11).max(18).superRefine(ValidationUtils.CreateDocumentZodValidator()),
+    tax_id: z.string().min(11).max(18),
     city_tax_id: z.string().max(14).nullable().optional(),
 
     street: z.string().min(3).max(60),

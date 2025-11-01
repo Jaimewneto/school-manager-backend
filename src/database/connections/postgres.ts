@@ -7,11 +7,6 @@ const configureTypeParser = () => {
 
     const FormataNumeric = (val: any) => Number(val);
 
-    // DATES
-    // types.setTypeParser(types.builtins.DATE, (val) => (val === null ? null : moment(val).format("YYYY-MM-DD")));
-    // types.setTypeParser(types.builtins.TIMESTAMP, (val) => (val === null ? null : moment(val).format("YYYY-MM-DD HH:mm:ss")));
-    // types.setTypeParser(types.builtins.TIMESTAMPTZ, (val) => (val === null ? null : moment(val).format("YYYY-MM-DD HH:mm:ss")));
-
     // DINHEIRO E FLOAT
     types.setTypeParser(types.builtins.MONEY, FormataNumeric);
     types.setTypeParser(types.builtins.NUMERIC, FormataNumeric);

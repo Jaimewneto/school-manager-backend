@@ -1,4 +1,3 @@
-import CPFCNPJValidator from "@linvix-sistemas/cpf-cnpj-validator";
 import { z, RefinementCtx } from "zod";
 
 import Utils from "./main";
@@ -57,22 +56,6 @@ const CreateDecimalZodValidator = (precision: number = 15, scale: number = 4, al
     };
 };
 
-const CreateDocumentZodValidator = () => {
-    return (value: string, ctx: RefinementCtx) => {
-        // remove caracteres não numericos
-        value = value.replace(/\D+/g, "");
-
-        const valid = value.length <= 11 ? CPFCNPJValidator.cpf.isValid(value) : CPFCNPJValidator.cnpj.isValid(value);
-
-        if (!valid) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: `Verifique o valor do campo "${ctx.path.join(".")}" precisa ser um CPF/CNPJ válido.`,
-            });
-        }
-    };
-};
-
 const CreatePhoneNumberZodValidator = () => {
     return (value: string, ctx: RefinementCtx) => {
         if (!Utils.isPhoneNumber(value)) {
@@ -87,7 +70,6 @@ const CreatePhoneNumberZodValidator = () => {
 const ValidationUtils = {
     CheckFloatNumber,
     CreateDecimalZodValidator,
-    CreateDocumentZodValidator,
     CreatePhoneNumberZodValidator,
 };
 
