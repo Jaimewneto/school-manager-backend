@@ -104,9 +104,6 @@ dist
 .tern-port
 .DS_Store
 
-# Sentry Auth Token
-.sentryclirc
-
 # Backup
 backup/
 

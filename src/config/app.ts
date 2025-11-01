@@ -9,7 +9,6 @@ import fastifySwagger from "@fastify/swagger";
 import { jsonSchemaTransform, validatorCompiler } from "fastify-type-provider-zod";
 
 import corsFactory from "./cors";
-import configureSentry, { setupFastifyErrorHandler } from "./sentry";
 
 // LOGGER
 import { Logger } from "@logging/main";
@@ -34,14 +33,6 @@ const app: FastifyInstance = fastify({
     keepAliveTimeout: 60000, // 60 segundos
     requestTimeout: 0, // evita timeout automático
 }).withTypeProvider();
-
-const applySentry = async () => {
-    logger.info("Setting up application Sentry monitor handler...");
-
-    configureSentry();
-
-    setupFastifyErrorHandler(app);
-};
 
 const applySwaggerOpenAPI = async () => {
     logger.info("Setting up application Swagger documentation...");
@@ -145,7 +136,6 @@ const applyRateLimiter = async () => {
 export {
     //
     app,
-    applySentry,
     applySwaggerOpenAPI,
     applyRoutes,
     applyBodyParsing,

@@ -17,9 +17,6 @@ export class WalletError extends BaseError {
         this.message = message ?? message_code;
         this.code = code;
 
-        // configura para ignorar o report de erros no sentry
-        this.ignore_sentry = true;
-
         // Only because we are extending a built in class
         Object.setPrototypeOf(this, WalletError.prototype);
     }

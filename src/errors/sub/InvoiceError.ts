@@ -19,9 +19,6 @@ export class InvoiceError extends BaseError {
         this.code = code;
         this.errors = errors ? InvoiceError.parseErrors(errors, code) : undefined;
 
-        // configura para ignorar o report de erros no sentry
-        this.ignore_sentry = true;
-
         // Only because we are extending a built in class
         Object.setPrototypeOf(this, InvoiceError.prototype);
     }

@@ -4,8 +4,6 @@ export default abstract class BaseError extends Error {
     abstract http_code: number;
     abstract code: string;
 
-    public ignore_sentry: boolean = false;
-
     constructor(message: string) {
         super(message);
 
@@ -13,8 +11,4 @@ export default abstract class BaseError extends Error {
     }
 
     abstract serializeErrors(): IBaseErrorPayload[];
-
-    public isSentryIgnored() {
-        return this.ignore_sentry;
-    }
 }

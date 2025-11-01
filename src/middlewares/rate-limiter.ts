@@ -1,7 +1,6 @@
 import { FastifyRequest } from "fastify";
 import rateLimit from "@fastify/rate-limit";
 import fastifyPlugin from "fastify-plugin";
-import { IoRedisClientPool } from "@config/redis";
 import RequestsError from "@errors/sub/RequestError";
 
 type RateLimiterOptions = {
@@ -34,7 +33,6 @@ const ApiRateLimiterMiddleware = fastifyPlugin(async (fastify, options: RateLimi
         hook = "onRequest",
         cache = 1000,
         allowList = [],
-        redis = await IoRedisClientPool(),
         nameSpace = "fastify-rate-limit-",
         continueExceeding = false,
         skipOnError = false,
@@ -63,7 +61,6 @@ const ApiRateLimiterMiddleware = fastifyPlugin(async (fastify, options: RateLimi
         hook,
         cache,
         allowList,
-        redis,
         nameSpace,
         continueExceeding,
         skipOnError,

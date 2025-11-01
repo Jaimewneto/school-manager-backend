@@ -18,9 +18,6 @@ export class ZodPayloadValidationError extends BaseError {
 
         this.name = ZodPayloadValidationError.name.trim();
 
-        // configura para ignorar o report de erros no sentry
-        this.ignore_sentry = true;
-
         // Only because we are extending a built in class
         Object.setPrototypeOf(this, ZodPayloadValidationError.prototype);
     }

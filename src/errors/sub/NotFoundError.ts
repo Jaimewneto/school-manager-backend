@@ -12,9 +12,6 @@ export class NotFoundError extends BaseError {
 
         this.name = NotFoundError.name.trim();
 
-        // configura para ignorar o report de erros no sentry
-        this.ignore_sentry = true;
-
         // Only because we are extending a built in class
         Object.setPrototypeOf(this, NotFoundError.prototype);
     }

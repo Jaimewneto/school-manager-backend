@@ -6,8 +6,6 @@ import * as appFactory from "./app";
 const setupFastify = async () => {
     await appFactory.applyErrorMiddleware(); // !should be first config
 
-    await appFactory.applySentry(); // !should be second config, after error middleware
-
     await appFactory.applyBodyParsing();
 
     await appFactory.applyCorsOptions();

@@ -1,18 +1,6 @@
 import { Logger } from "@logging/index";
 
-//import io from "@config/socket"; //! Por hora não estamos usando
-import { v1Namespace, webRTCNamespace } from "@config/socket/namespaces";
-
 const logger = Logger(`api-autoatendimento-v3@${__filename}`);
-
-const closeSocketConnections = async () => {
-    logger.info(`Disconnecting all websocket clients...`);
-
-    await v1Namespace.local.disconnectSockets();
-    await webRTCNamespace.local.disconnectSockets();
-
-    // await io.close(); //! Por hora não estamos usando
-};
 
 const exitWithCode = (code: number) => {
     setTimeout(() => {
@@ -38,15 +26,11 @@ const declareProcessListeners = () => {
     process.on("SIGTERM", async () => {
         logger.info(`Process ${process.pid} received SIGTERM: Exiting with code 0...`);
 
-        await closeSocketConnections();
-
         exitWithCode(0);
     });
 
     process.on("SIGINT", async () => {
         logger.info(`Process ${process.pid} received SIGINT: Exiting with code 0...`);
-
-        await closeSocketConnections();
 
         exitWithCode(0);
     });
