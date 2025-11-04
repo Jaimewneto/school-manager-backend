@@ -4,7 +4,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import RequestUtils from "@utils/request";
 
 // SERVICES
-import OrganizationService from "@services/OrganizationService";
+import OrganizationService from "@services/knex/OrganizationService";
 
 // ERRORS
 import { NotFoundError } from "@errors/main";

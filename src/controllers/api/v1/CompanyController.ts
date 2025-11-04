@@ -7,7 +7,7 @@ import { CompanyModel } from "@database/models/CompanyModel";
 import RequestUtils from "@utils/request";
 
 // SERVICES
-import CompanyService from "@services/CompanyService";
+import CompanyService from "@services/knex/CompanyService";
 
 // ERRORS
 import { NotFoundError } from "@errors/main";

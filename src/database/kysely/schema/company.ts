@@ -17,5 +17,5 @@ export interface CompanyTable {
 }
 
 export type Company = Selectable<CompanyTable>;
-export type NewCompany = Insertable<CompanyTable>;
+export type CompanyCreate = Insertable<CompanyTable>;
 export type CompanyUpdate = Updateable<CompanyTable>;

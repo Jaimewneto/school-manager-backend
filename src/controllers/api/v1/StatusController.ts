@@ -2,7 +2,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 
 // SERVICES
-import StatusService from "@services/StatusService";
+import StatusService from "@services/knex/StatusService";
 
 // UTILS
 import RequestUtils from "@utils/request";

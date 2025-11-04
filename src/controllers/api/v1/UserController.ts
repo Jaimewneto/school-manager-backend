@@ -7,7 +7,7 @@ import { UserModel } from "@database/models/UserModel";
 import RequestUtils from "@utils/request";
 
 // SERVICES
-import UserService from "@services/UserService";
+import UserService from "@services/knex/UserService";
 
 // ERRORS
 import { NotFoundError } from "@errors/main";
