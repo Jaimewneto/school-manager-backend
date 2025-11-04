@@ -1,4 +1,4 @@
-import { SalespersonRepository } from "@database/repositories/SalespersonRepository";
+import { SalespersonRepository } from "@database/repositories/knex/SalespersonRepository";
 
 // MODELS
 import { SalespersonModelInsert, SalespersonModelUpdate } from "@database/models/SalespersonModel";

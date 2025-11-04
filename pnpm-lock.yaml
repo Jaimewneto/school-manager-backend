@@ -50,6 +50,9 @@ importers:
       knex:
         specifier: ^3.1.0
         version: 3.1.0(pg@8.16.3)
+      kysely:
+        specifier: ^0.28.8
+        version: 0.28.8
       luxon:
         specifier: ^3.6.1
         version: 3.7.2
@@ -2349,6 +2352,10 @@ packages:
 
   kuler@2.0.0:
     resolution: {integrity: sha512-Xq9nH7KlWZmXAtodXDDRE7vs6DU1gTU8zYDHDiWLSip45Egwq3plLHzPn27NgvzL2r1LMPC1vdqh98sQxtqj4A==}
+
+  kysely@0.28.8:
+    resolution: {integrity: sha512-QUOgl5ZrS9IRuhq5FvOKFSsD/3+IA6MLE81/bOOTRA/YQpKDza2sFdN5g6JCB9BOpqMJDGefLCQ9F12hRS13TA==}
+    engines: {node: '>=20.0.0'}
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -5773,6 +5780,8 @@ snapshots:
       - supports-color
 
   kuler@2.0.0: {}
+
+  kysely@0.28.8: {}
 
   levn@0.4.1:
     dependencies:

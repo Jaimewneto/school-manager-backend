@@ -8,7 +8,7 @@ import { CompanyTokenPayload } from "@auth/types";
 
 import { getJWTEnvironment } from "@utils/environment";
 
-import { CompanyRepository } from "@database/repositories/CompanyRepository";
+import { CompanyRepository } from "@database/repositories/knex/CompanyRepository";
 
 const run = async () => {
     const empresaRepository = new CompanyRepository();

@@ -1,4 +1,4 @@
-import { OrganizationRepository } from "@database/repositories/OrganizationRepository";
+import { OrganizationRepository } from "@database/repositories/knex/OrganizationRepository";
 
 // MODELS
 import { OrganizationModelInsert, OrganizationModelUpdate } from "@database/models/OrganizationModel";

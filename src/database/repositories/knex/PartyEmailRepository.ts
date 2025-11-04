@@ -1,50 +1,44 @@
 // SCOPED FILTERS
-import { getPartyScopedFilters } from "@database/scoped/filters";
+import { getPartyEmailScopedFilters } from "@database/scoped/filters";
 
 // CONNECTIONS
 import { PoolClient } from "@database/connections/postgres";
 
 // BASE REPOSITORY
-import { BaseRepository } from "./base/BaseRepository";
-import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "./base/types";
+import { BaseRepository } from "../base/KnexBaseRepository";
+import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "../base/types";
 
 // TYPES
-import { PartyModel, PartyModelInsert, PartyModelUpdate } from "@database/models/PartyModel";
+import { PartyEmailModel, PartyEmailModelInsert, PartyEmailModelUpdate } from "@database/models/PartyEmailModel";
 
-// EVENTS
-import AppEventEmitter from "@events/emitter";
-import { PartyCreatedEvent, PartyUpdatedEvent, PartyDeletedEvent } from "@events/emitters/party";
-
-export class PartyRepository extends BaseRepository<PartyModel, PartyModelInsert, PartyModelUpdate> implements iRepository<PartyModel> {
+export class PartyEmailRepository
+    extends BaseRepository<PartyEmailModel, PartyEmailModelInsert, PartyEmailModelUpdate>
+    implements iRepository<PartyEmailModel>
+{
     constructor() {
         super({
-            table: "role",
+            table: "party_email",
             primaryKey: "uuid",
 
             fillableColumns: [
                 //
                 "uuid",
                 "organization_uuid",
-                "is_customer",
-                "is_supplier",
-                "is_carrier",
-                "legal_name",
-                "trade_name",
-                "tax_id",
-                "state_registration",
-                "notes",
-                "is_active",
+                "party_uuid",
+                "email",
+                "description",
+                "is_primary",
                 "updated_at",
                 "deleted_at",
             ],
             selectableColumns: [],
 
-            entityClass: PartyModel,
+            entityClass: PartyEmailModel,
         });
     }
 
     protected getScopedFilters() {
-        return getPartyScopedFilters();
+        return getPartyEmailScopedFilters();
     }
 
     async findOne(params: iRepositoryFindOne) {
@@ -77,15 +71,13 @@ export class PartyRepository extends BaseRepository<PartyModel, PartyModelInsert
         }
     }
 
-    async create({ data, db }: { data: PartyModelInsert; db?: PoolClient }) {
+    async create({ data, db }: { data: PartyEmailModelInsert; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
             await beginTransaction();
 
             const result = await this.insertRecord({ data, db: client });
-
-            AppEventEmitter.emitEvent(new PartyCreatedEvent(result));
 
             await commitTransaction();
 
@@ -99,7 +91,7 @@ export class PartyRepository extends BaseRepository<PartyModel, PartyModelInsert
         }
     }
 
-    async update({ uuid, data, db }: { uuid: string; data: PartyModelUpdate; db?: PoolClient }) {
+    async update({ uuid, data, db }: { uuid: string; data: PartyEmailModelUpdate; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
@@ -108,8 +100,6 @@ export class PartyRepository extends BaseRepository<PartyModel, PartyModelInsert
             const result = await this.updateRecordByPk({ identifier: uuid, data, db: client });
 
             await commitTransaction();
-
-            AppEventEmitter.emitEvent(new PartyUpdatedEvent(result));
 
             return result;
         } catch (error) {
@@ -130,8 +120,6 @@ export class PartyRepository extends BaseRepository<PartyModel, PartyModelInsert
             const result = await this.removeRecordByPk({ identifier: uuid, db: client });
 
             await commitTransaction();
-
-            AppEventEmitter.emitEvent(new PartyDeletedEvent(result));
 
             return result;
         } catch (error) {

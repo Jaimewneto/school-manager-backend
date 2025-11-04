@@ -1,4 +1,4 @@
-import { RoleRepository } from "@database/repositories/RoleRepository";
+import { RoleRepository } from "@database/repositories/knex/RoleRepository";
 
 // MODELS
 import { RoleModelInsert, RoleModelUpdate } from "@database/models/RoleModel";

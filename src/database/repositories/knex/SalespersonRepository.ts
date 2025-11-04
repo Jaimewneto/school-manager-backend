@@ -1,35 +1,46 @@
 // SCOPED FILTERS
-import { getUserScopedFilters } from "@database/scoped/filters";
+import { getSalespersonScopedFilters } from "@database/scoped/filters";
 
 // CONNECTIONS
 import { PoolClient } from "@database/connections/postgres";
 
 // BASE REPOSITORY
-import { BaseRepository } from "./base/BaseRepository";
-import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "./base/types";
+import { BaseRepository } from "../base/KnexBaseRepository";
+import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "../base/types";
 
 // TYPES
-import { UserModel, UserModelInsert, UserModelUpdate } from "@database/models/UserModel";
+import { SalespersonModel, SalespersonModelInsert, SalespersonModelUpdate } from "@database/models/SalespersonModel";
 
 // EVENTS
 import AppEventEmitter from "@events/emitter";
-import { UserCreatedEvent, UserUpdatedEvent, UserDeletedEvent } from "@events/emitters/user";
+import { SalespersonCreatedEvent, SalespersonUpdatedEvent, SalespersonDeletedEvent } from "@events/emitters/salesperson";
 
-export class UserRepository extends BaseRepository<UserModel, UserModelInsert, UserModelUpdate> implements iRepository<UserModel> {
+export class SalespersonRepository
+    extends BaseRepository<SalespersonModel, SalespersonModelInsert, SalespersonModelUpdate>
+    implements iRepository<SalespersonModel>
+{
     constructor() {
         super({
-            table: "user",
+            table: "salesperson",
             primaryKey: "uuid",
 
-            fillableColumns: ["uuid", "name", "email", "password_hash", "updated_at", "deleted_at"],
+            fillableColumns: [
+                //
+                "uuid",
+                "organization_uuid",
+                "user_uuid",
+                "name",
+                "updated_at",
+                "deleted_at",
+            ],
             selectableColumns: [],
 
-            entityClass: UserModel,
+            entityClass: SalespersonModel,
         });
     }
 
     protected getScopedFilters() {
-        return getUserScopedFilters();
+        return getSalespersonScopedFilters();
     }
 
     async findOne(params: iRepositoryFindOne) {
@@ -62,7 +73,7 @@ export class UserRepository extends BaseRepository<UserModel, UserModelInsert, U
         }
     }
 
-    async create({ data, db }: { data: UserModelInsert; db?: PoolClient }) {
+    async create({ data, db }: { data: SalespersonModelInsert; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
@@ -70,7 +81,7 @@ export class UserRepository extends BaseRepository<UserModel, UserModelInsert, U
 
             const result = await this.insertRecord({ data, db: client });
 
-            AppEventEmitter.emitEvent(new UserCreatedEvent(result));
+            AppEventEmitter.emitEvent(new SalespersonCreatedEvent(result));
 
             await commitTransaction();
 
@@ -84,7 +95,7 @@ export class UserRepository extends BaseRepository<UserModel, UserModelInsert, U
         }
     }
 
-    async update({ uuid, data, db }: { uuid: string; data: UserModelUpdate; db?: PoolClient }) {
+    async update({ uuid, data, db }: { uuid: string; data: SalespersonModelUpdate; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
@@ -94,7 +105,7 @@ export class UserRepository extends BaseRepository<UserModel, UserModelInsert, U
 
             await commitTransaction();
 
-            AppEventEmitter.emitEvent(new UserUpdatedEvent(result));
+            AppEventEmitter.emitEvent(new SalespersonUpdatedEvent(result));
 
             return result;
         } catch (error) {
@@ -116,7 +127,7 @@ export class UserRepository extends BaseRepository<UserModel, UserModelInsert, U
 
             await commitTransaction();
 
-            AppEventEmitter.emitEvent(new UserDeletedEvent(result));
+            AppEventEmitter.emitEvent(new SalespersonDeletedEvent(result));
 
             return result;
         } catch (error) {

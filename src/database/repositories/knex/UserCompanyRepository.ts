@@ -1,46 +1,27 @@
-// SCOPED FILTERS
-import { getSalespersonScopedFilters } from "@database/scoped/filters";
-
 // CONNECTIONS
 import { PoolClient } from "@database/connections/postgres";
 
 // BASE REPOSITORY
-import { BaseRepository } from "./base/BaseRepository";
-import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "./base/types";
+import { BaseRepository } from "../base/KnexBaseRepository";
+import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "../base/types";
 
 // TYPES
-import { SalespersonModel, SalespersonModelInsert, SalespersonModelUpdate } from "@database/models/SalespersonModel";
+import { UserCompanyModel, UserCompanyModelInsert, UserCompanyModelUpdate } from "@database/models/UserCompanyModel";
 
-// EVENTS
-import AppEventEmitter from "@events/emitter";
-import { SalespersonCreatedEvent, SalespersonUpdatedEvent, SalespersonDeletedEvent } from "@events/emitters/salesperson";
-
-export class SalespersonRepository
-    extends BaseRepository<SalespersonModel, SalespersonModelInsert, SalespersonModelUpdate>
-    implements iRepository<SalespersonModel>
+export class UserCompanyRepository
+    extends BaseRepository<UserCompanyModel, UserCompanyModelInsert, UserCompanyModelUpdate>
+    implements iRepository<UserCompanyModel>
 {
     constructor() {
         super({
-            table: "salesperson",
+            table: "user_company",
             primaryKey: "uuid",
 
-            fillableColumns: [
-                //
-                "uuid",
-                "organization_uuid",
-                "user_uuid",
-                "name",
-                "updated_at",
-                "deleted_at",
-            ],
+            fillableColumns: ["uuid", "user_uuid", "company_uuid", "role_uuid", "updated_at", "deleted_at"],
             selectableColumns: [],
 
-            entityClass: SalespersonModel,
+            entityClass: UserCompanyModel,
         });
-    }
-
-    protected getScopedFilters() {
-        return getSalespersonScopedFilters();
     }
 
     async findOne(params: iRepositoryFindOne) {
@@ -73,15 +54,13 @@ export class SalespersonRepository
         }
     }
 
-    async create({ data, db }: { data: SalespersonModelInsert; db?: PoolClient }) {
+    async create({ data, db }: { data: UserCompanyModelInsert; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
             await beginTransaction();
 
             const result = await this.insertRecord({ data, db: client });
-
-            AppEventEmitter.emitEvent(new SalespersonCreatedEvent(result));
 
             await commitTransaction();
 
@@ -95,7 +74,7 @@ export class SalespersonRepository
         }
     }
 
-    async update({ uuid, data, db }: { uuid: string; data: SalespersonModelUpdate; db?: PoolClient }) {
+    async update({ uuid, data, db }: { uuid: string; data: UserCompanyModelUpdate; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
@@ -104,8 +83,6 @@ export class SalespersonRepository
             const result = await this.updateRecordByPk({ identifier: uuid, data, db: client });
 
             await commitTransaction();
-
-            AppEventEmitter.emitEvent(new SalespersonUpdatedEvent(result));
 
             return result;
         } catch (error) {
@@ -126,8 +103,6 @@ export class SalespersonRepository
             const result = await this.removeRecordByPk({ identifier: uuid, db: client });
 
             await commitTransaction();
-
-            AppEventEmitter.emitEvent(new SalespersonDeletedEvent(result));
 
             return result;
         } catch (error) {

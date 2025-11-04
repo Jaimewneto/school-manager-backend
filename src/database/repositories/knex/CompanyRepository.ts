@@ -5,8 +5,8 @@ import { getCompanyScopedFilters } from "@database/scoped/filters";
 import { DBPoolClient, PoolClient } from "@database/connections/postgres";
 
 // BASE REPOSITORY
-import { BaseRepository } from "./base/BaseRepository";
-import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "./base/types";
+import { BaseRepository } from "../base/KnexBaseRepository";
+import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "../base/types";
 
 // MODELS
 import { CompanyModel, CompanyModelInsert, CompanyModelUpdate } from "@/database/models/CompanyModel";

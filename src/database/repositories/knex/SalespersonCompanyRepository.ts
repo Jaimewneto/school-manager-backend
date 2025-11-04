@@ -1,48 +1,27 @@
-// SCOPED FILTERS
-import { getRoleScopedFilters } from "@database/scoped/filters";
-
 // CONNECTIONS
 import { PoolClient } from "@database/connections/postgres";
 
 // BASE REPOSITORY
-import { BaseRepository } from "./base/BaseRepository";
-import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "./base/types";
+import { BaseRepository } from "../base/KnexBaseRepository";
+import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "../base/types";
 
 // TYPES
-import { RoleModel, RoleModelInsert, RoleModelUpdate } from "@database/models/RoleModel";
+import { SalespersonCompanyModel, SalespersonCompanyModelInsert, SalespersonCompanyModelUpdate } from "@database/models/SalespersonCompanyModel";
 
-// EVENTS
-import AppEventEmitter from "@events/emitter";
-import { RoleCreatedEvent, RoleUpdatedEvent, RoleDeletedEvent } from "@events/emitters/role";
-
-export class RoleRepository extends BaseRepository<RoleModel, RoleModelInsert, RoleModelUpdate> implements iRepository<RoleModel> {
+export class SalespersonCompanyRepository
+    extends BaseRepository<SalespersonCompanyModel, SalespersonCompanyModelInsert, SalespersonCompanyModelUpdate>
+    implements iRepository<SalespersonCompanyModel>
+{
     constructor() {
         super({
-            table: "role",
+            table: "salesperson_company",
             primaryKey: "uuid",
 
-            fillableColumns: [
-                //
-                "uuid",
-                "organization_uuid",
-                "description",
-                "sales_read",
-                "sales_write",
-                "sales_delete",
-                "finances_read",
-                "finances_write",
-                "finances_delete",
-                "updated_at",
-                "deleted_at",
-            ],
+            fillableColumns: ["uuid", "salesperson_uuid", "company_uuid", "updated_at", "deleted_at"],
             selectableColumns: [],
 
-            entityClass: RoleModel,
+            entityClass: SalespersonCompanyModel,
         });
-    }
-
-    protected getScopedFilters() {
-        return getRoleScopedFilters();
     }
 
     async findOne(params: iRepositoryFindOne) {
@@ -75,15 +54,13 @@ export class RoleRepository extends BaseRepository<RoleModel, RoleModelInsert, R
         }
     }
 
-    async create({ data, db }: { data: RoleModelInsert; db?: PoolClient }) {
+    async create({ data, db }: { data: SalespersonCompanyModelInsert; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
             await beginTransaction();
 
             const result = await this.insertRecord({ data, db: client });
-
-            AppEventEmitter.emitEvent(new RoleCreatedEvent(result));
 
             await commitTransaction();
 
@@ -97,7 +74,7 @@ export class RoleRepository extends BaseRepository<RoleModel, RoleModelInsert, R
         }
     }
 
-    async update({ uuid, data, db }: { uuid: string; data: RoleModelUpdate; db?: PoolClient }) {
+    async update({ uuid, data, db }: { uuid: string; data: SalespersonCompanyModelUpdate; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
@@ -106,8 +83,6 @@ export class RoleRepository extends BaseRepository<RoleModel, RoleModelInsert, R
             const result = await this.updateRecordByPk({ identifier: uuid, data, db: client });
 
             await commitTransaction();
-
-            AppEventEmitter.emitEvent(new RoleUpdatedEvent(result));
 
             return result;
         } catch (error) {
@@ -128,8 +103,6 @@ export class RoleRepository extends BaseRepository<RoleModel, RoleModelInsert, R
             const result = await this.removeRecordByPk({ identifier: uuid, db: client });
 
             await commitTransaction();
-
-            AppEventEmitter.emitEvent(new RoleDeletedEvent(result));
 
             return result;
         } catch (error) {

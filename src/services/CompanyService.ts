@@ -1,4 +1,4 @@
-import { CompanyRepository } from "@database/repositories/CompanyRepository";
+import { CompanyRepository } from "@database/repositories/knex/CompanyRepository";
 
 // MODELS
 import { CompanyModelInsert, CompanyModelUpdate } from "@database/models/CompanyModel";

@@ -2,9 +2,9 @@
 import { PartyModelInsert, PartyModelUpdate } from "@database/models/PartyModel";
 
 // REPOSITORIES
-import { PartyRepository } from "@database/repositories/PartyRepository";
-import { PartyEmailRepository } from "@database/repositories/PartyEmailRepository";
-import { PartyPhoneRepository } from "@database/repositories/PartyPhoneRepository";
+import { PartyRepository } from "@database/repositories/knex/PartyRepository";
+import { PartyEmailRepository } from "@database/repositories/knex/PartyEmailRepository";
+import { PartyPhoneRepository } from "@database/repositories/knex/PartyPhoneRepository";
 
 // TYPES
 import { iRepositoryFindMany, iRepositoryFindOne } from "@database/repositories/base/types";

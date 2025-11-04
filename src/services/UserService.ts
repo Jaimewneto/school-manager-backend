@@ -1,4 +1,4 @@
-import { UserRepository } from "@database/repositories/UserRepository";
+import { UserRepository } from "@database/repositories/knex/UserRepository";
 
 // MODELS
 import { UserModelInsert, UserModelUpdate } from "@database/models/UserModel";

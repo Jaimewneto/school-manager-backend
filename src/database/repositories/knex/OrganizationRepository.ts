@@ -1,44 +1,38 @@
 // SCOPED FILTERS
-import { getPartyPhoneScopedFilters } from "@database/scoped/filters";
+import { getOrganizationScopedFilters } from "@database/scoped/filters";
 
 // CONNECTIONS
 import { PoolClient } from "@database/connections/postgres";
 
 // BASE REPOSITORY
-import { BaseRepository } from "./base/BaseRepository";
-import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "./base/types";
+import { BaseRepository } from "../base/KnexBaseRepository";
+import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "../base/types";
 
 // TYPES
-import { PartyPhoneModel, PartyPhoneModelInsert, PartyPhoneModelUpdate } from "@database/models/PartyPhoneModel";
+import { OrganizationModel, OrganizationModelInsert, OrganizationModelUpdate } from "@database/models/OrganizationModel";
 
-export class PartyPhoneRepository
-    extends BaseRepository<PartyPhoneModel, PartyPhoneModelInsert, PartyPhoneModelUpdate>
-    implements iRepository<PartyPhoneModel>
+// EVENTS
+import AppEventEmitter from "@events/emitter";
+import { OrganizationCreatedEvent, OrganizationUpdatedEvent, OrganizationDeletedEvent } from "@events/emitters/organization";
+
+export class OrganizationRepository
+    extends BaseRepository<OrganizationModel, OrganizationModelInsert, OrganizationModelUpdate>
+    implements iRepository<OrganizationModel>
 {
     constructor() {
         super({
-            table: "party_email",
+            table: "organization",
             primaryKey: "uuid",
 
-            fillableColumns: [
-                //
-                "uuid",
-                "organization_uuid",
-                "party_uuid",
-                "phone",
-                "description",
-                "is_primary",
-                "updated_at",
-                "deleted_at",
-            ],
+            fillableColumns: ["uuid", "name", "updated_at", "deleted_at"],
             selectableColumns: [],
 
-            entityClass: PartyPhoneModel,
+            entityClass: OrganizationModel,
         });
     }
 
     protected getScopedFilters() {
-        return getPartyPhoneScopedFilters();
+        return getOrganizationScopedFilters();
     }
 
     async findOne(params: iRepositoryFindOne) {
@@ -71,13 +65,15 @@ export class PartyPhoneRepository
         }
     }
 
-    async create({ data, db }: { data: PartyPhoneModelInsert; db?: PoolClient }) {
+    async create({ data, db }: { data: OrganizationModelInsert; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
             await beginTransaction();
 
             const result = await this.insertRecord({ data, db: client });
+
+            AppEventEmitter.emitEvent(new OrganizationCreatedEvent(result));
 
             await commitTransaction();
 
@@ -91,7 +87,7 @@ export class PartyPhoneRepository
         }
     }
 
-    async update({ uuid, data, db }: { uuid: string; data: PartyPhoneModelUpdate; db?: PoolClient }) {
+    async update({ uuid, data, db }: { uuid: string; data: OrganizationModelUpdate; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
@@ -100,6 +96,8 @@ export class PartyPhoneRepository
             const result = await this.updateRecordByPk({ identifier: uuid, data, db: client });
 
             await commitTransaction();
+
+            AppEventEmitter.emitEvent(new OrganizationUpdatedEvent(result));
 
             return result;
         } catch (error) {
@@ -120,6 +118,8 @@ export class PartyPhoneRepository
             const result = await this.removeRecordByPk({ identifier: uuid, db: client });
 
             await commitTransaction();
+
+            AppEventEmitter.emitEvent(new OrganizationDeletedEvent(result));
 
             return result;
         } catch (error) {

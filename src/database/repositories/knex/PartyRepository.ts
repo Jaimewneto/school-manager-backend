@@ -1,38 +1,50 @@
 // SCOPED FILTERS
-import { getOrganizationScopedFilters } from "@database/scoped/filters";
+import { getPartyScopedFilters } from "@database/scoped/filters";
 
 // CONNECTIONS
 import { PoolClient } from "@database/connections/postgres";
 
 // BASE REPOSITORY
-import { BaseRepository } from "./base/BaseRepository";
-import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "./base/types";
+import { BaseRepository } from "../base/KnexBaseRepository";
+import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "../base/types";
 
 // TYPES
-import { OrganizationModel, OrganizationModelInsert, OrganizationModelUpdate } from "@database/models/OrganizationModel";
+import { PartyModel, PartyModelInsert, PartyModelUpdate } from "@database/models/PartyModel";
 
 // EVENTS
 import AppEventEmitter from "@events/emitter";
-import { OrganizationCreatedEvent, OrganizationUpdatedEvent, OrganizationDeletedEvent } from "@events/emitters/organization";
+import { PartyCreatedEvent, PartyUpdatedEvent, PartyDeletedEvent } from "@events/emitters/party";
 
-export class OrganizationRepository
-    extends BaseRepository<OrganizationModel, OrganizationModelInsert, OrganizationModelUpdate>
-    implements iRepository<OrganizationModel>
-{
+export class PartyRepository extends BaseRepository<PartyModel, PartyModelInsert, PartyModelUpdate> implements iRepository<PartyModel> {
     constructor() {
         super({
-            table: "organization",
+            table: "role",
             primaryKey: "uuid",
 
-            fillableColumns: ["uuid", "name", "updated_at", "deleted_at"],
+            fillableColumns: [
+                //
+                "uuid",
+                "organization_uuid",
+                "is_customer",
+                "is_supplier",
+                "is_carrier",
+                "legal_name",
+                "trade_name",
+                "tax_id",
+                "state_registration",
+                "notes",
+                "is_active",
+                "updated_at",
+                "deleted_at",
+            ],
             selectableColumns: [],
 
-            entityClass: OrganizationModel,
+            entityClass: PartyModel,
         });
     }
 
     protected getScopedFilters() {
-        return getOrganizationScopedFilters();
+        return getPartyScopedFilters();
     }
 
     async findOne(params: iRepositoryFindOne) {
@@ -65,7 +77,7 @@ export class OrganizationRepository
         }
     }
 
-    async create({ data, db }: { data: OrganizationModelInsert; db?: PoolClient }) {
+    async create({ data, db }: { data: PartyModelInsert; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
@@ -73,7 +85,7 @@ export class OrganizationRepository
 
             const result = await this.insertRecord({ data, db: client });
 
-            AppEventEmitter.emitEvent(new OrganizationCreatedEvent(result));
+            AppEventEmitter.emitEvent(new PartyCreatedEvent(result));
 
             await commitTransaction();
 
@@ -87,7 +99,7 @@ export class OrganizationRepository
         }
     }
 
-    async update({ uuid, data, db }: { uuid: string; data: OrganizationModelUpdate; db?: PoolClient }) {
+    async update({ uuid, data, db }: { uuid: string; data: PartyModelUpdate; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
@@ -97,7 +109,7 @@ export class OrganizationRepository
 
             await commitTransaction();
 
-            AppEventEmitter.emitEvent(new OrganizationUpdatedEvent(result));
+            AppEventEmitter.emitEvent(new PartyUpdatedEvent(result));
 
             return result;
         } catch (error) {
@@ -119,7 +131,7 @@ export class OrganizationRepository
 
             await commitTransaction();
 
-            AppEventEmitter.emitEvent(new OrganizationDeletedEvent(result));
+            AppEventEmitter.emitEvent(new PartyDeletedEvent(result));
 
             return result;
         } catch (error) {

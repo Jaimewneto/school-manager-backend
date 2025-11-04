@@ -1,27 +1,35 @@
+// SCOPED FILTERS
+import { getUserScopedFilters } from "@database/scoped/filters";
+
 // CONNECTIONS
 import { PoolClient } from "@database/connections/postgres";
 
 // BASE REPOSITORY
-import { BaseRepository } from "./base/BaseRepository";
-import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "./base/types";
+import { BaseRepository } from "../base/KnexBaseRepository";
+import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "../base/types";
 
 // TYPES
-import { SalespersonCompanyModel, SalespersonCompanyModelInsert, SalespersonCompanyModelUpdate } from "@database/models/SalespersonCompanyModel";
+import { UserModel, UserModelInsert, UserModelUpdate } from "@database/models/UserModel";
 
-export class SalespersonCompanyRepository
-    extends BaseRepository<SalespersonCompanyModel, SalespersonCompanyModelInsert, SalespersonCompanyModelUpdate>
-    implements iRepository<SalespersonCompanyModel>
-{
+// EVENTS
+import AppEventEmitter from "@events/emitter";
+import { UserCreatedEvent, UserUpdatedEvent, UserDeletedEvent } from "@events/emitters/user";
+
+export class UserRepository extends BaseRepository<UserModel, UserModelInsert, UserModelUpdate> implements iRepository<UserModel> {
     constructor() {
         super({
-            table: "salesperson_company",
+            table: "user",
             primaryKey: "uuid",
 
-            fillableColumns: ["uuid", "salesperson_uuid", "company_uuid", "updated_at", "deleted_at"],
+            fillableColumns: ["uuid", "name", "email", "password_hash", "updated_at", "deleted_at"],
             selectableColumns: [],
 
-            entityClass: SalespersonCompanyModel,
+            entityClass: UserModel,
         });
+    }
+
+    protected getScopedFilters() {
+        return getUserScopedFilters();
     }
 
     async findOne(params: iRepositoryFindOne) {
@@ -54,13 +62,15 @@ export class SalespersonCompanyRepository
         }
     }
 
-    async create({ data, db }: { data: SalespersonCompanyModelInsert; db?: PoolClient }) {
+    async create({ data, db }: { data: UserModelInsert; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
             await beginTransaction();
 
             const result = await this.insertRecord({ data, db: client });
+
+            AppEventEmitter.emitEvent(new UserCreatedEvent(result));
 
             await commitTransaction();
 
@@ -74,7 +84,7 @@ export class SalespersonCompanyRepository
         }
     }
 
-    async update({ uuid, data, db }: { uuid: string; data: SalespersonCompanyModelUpdate; db?: PoolClient }) {
+    async update({ uuid, data, db }: { uuid: string; data: UserModelUpdate; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
@@ -83,6 +93,8 @@ export class SalespersonCompanyRepository
             const result = await this.updateRecordByPk({ identifier: uuid, data, db: client });
 
             await commitTransaction();
+
+            AppEventEmitter.emitEvent(new UserUpdatedEvent(result));
 
             return result;
         } catch (error) {
@@ -103,6 +115,8 @@ export class SalespersonCompanyRepository
             const result = await this.removeRecordByPk({ identifier: uuid, db: client });
 
             await commitTransaction();
+
+            AppEventEmitter.emitEvent(new UserDeletedEvent(result));
 
             return result;
         } catch (error) {

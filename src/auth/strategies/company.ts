@@ -6,7 +6,7 @@ import { SignJWT, jwtVerify, errors as JoseErrors } from "jose";
 import { AuthError, NotFoundError } from "@errors/main";
 
 // REPOSITORIES
-import { CompanyRepository } from "@database/repositories/CompanyRepository";
+import { CompanyRepository } from "@database/repositories/knex/CompanyRepository";
 
 // AUTH
 import { AuthStrategy, AuthResult, CompanyTokenPayload } from "@auth/types";

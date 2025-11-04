@@ -1,19 +1,19 @@
 // SCOPED FILTERS
-import { getPartyEmailScopedFilters } from "@database/scoped/filters";
+import { getPartyPhoneScopedFilters } from "@database/scoped/filters";
 
 // CONNECTIONS
 import { PoolClient } from "@database/connections/postgres";
 
 // BASE REPOSITORY
-import { BaseRepository } from "./base/BaseRepository";
-import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "./base/types";
+import { BaseRepository } from "../base/KnexBaseRepository";
+import { iRepository, iRepositoryFindMany, iRepositoryFindOne } from "../base/types";
 
 // TYPES
-import { PartyEmailModel, PartyEmailModelInsert, PartyEmailModelUpdate } from "@database/models/PartyEmailModel";
+import { PartyPhoneModel, PartyPhoneModelInsert, PartyPhoneModelUpdate } from "@database/models/PartyPhoneModel";
 
-export class PartyEmailRepository
-    extends BaseRepository<PartyEmailModel, PartyEmailModelInsert, PartyEmailModelUpdate>
-    implements iRepository<PartyEmailModel>
+export class PartyPhoneRepository
+    extends BaseRepository<PartyPhoneModel, PartyPhoneModelInsert, PartyPhoneModelUpdate>
+    implements iRepository<PartyPhoneModel>
 {
     constructor() {
         super({
@@ -25,7 +25,7 @@ export class PartyEmailRepository
                 "uuid",
                 "organization_uuid",
                 "party_uuid",
-                "email",
+                "phone",
                 "description",
                 "is_primary",
                 "updated_at",
@@ -33,12 +33,12 @@ export class PartyEmailRepository
             ],
             selectableColumns: [],
 
-            entityClass: PartyEmailModel,
+            entityClass: PartyPhoneModel,
         });
     }
 
     protected getScopedFilters() {
-        return getPartyEmailScopedFilters();
+        return getPartyPhoneScopedFilters();
     }
 
     async findOne(params: iRepositoryFindOne) {
@@ -71,7 +71,7 @@ export class PartyEmailRepository
         }
     }
 
-    async create({ data, db }: { data: PartyEmailModelInsert; db?: PoolClient }) {
+    async create({ data, db }: { data: PartyPhoneModelInsert; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
@@ -91,7 +91,7 @@ export class PartyEmailRepository
         }
     }
 
-    async update({ uuid, data, db }: { uuid: string; data: PartyEmailModelUpdate; db?: PoolClient }) {
+    async update({ uuid, data, db }: { uuid: string; data: PartyPhoneModelUpdate; db?: PoolClient }) {
         const { client, beginTransaction, commitTransaction, rollbackTransaction, releaseConnection } = await this.getWriteConnection(db);
 
         try {
